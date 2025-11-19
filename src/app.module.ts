@@ -10,7 +10,16 @@ import { SchedulerModule } from './modules/scheduler/scheduler.module';
 import { SharedModule } from './shared/shared.module';
 
 @Module({
-  imports: [PrismaModule, EmailModule, UsersModule, PreferencesModule, NotificationsModule, EventsModule, SchedulerModule, SharedModule],
+  imports: [
+    PrismaModule,
+    EmailModule,
+    UsersModule,
+    PreferencesModule,
+    NotificationsModule,
+    EventsModule,
+    SchedulerModule,
+    SharedModule,
+  ],
   controllers: [],
   providers: [EmailService],
 })
