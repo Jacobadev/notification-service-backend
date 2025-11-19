@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String?
+  notifications Notification[]
+  preferences   Preference[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  content   String
+  channel   Channel
+  read      Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  event     Event?   @relation(fields: [eventId], references: [id])
+  eventId   String?
+  createdAt DateTime @default(now())
+}
+
+model Preference {
+  id        String    @id @default(cuid())
+  channel   Channel
+  frequency Frequency
+  eventType EventType
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([userId, eventType, channel])
+}
+
+model Event {
+  id            String         @id @default(cuid())
+  type          EventType
+  payload       Json
+  notifications Notification[]
+  createdAt     DateTime       @default(now())
+}
+
+enum Channel {
+  IN_APP
+  EMAIL
+}
+
+enum Frequency {
+  REAL_TIME
+  DAILY
+  WEEKLY
+}
+
+enum EventType {
+  NEW_AUDIT
+  DOCUMENT_UPDATED
+  REPORT_READY
+}

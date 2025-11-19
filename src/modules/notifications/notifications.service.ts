@@ -1,26 +1,57 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../providers/prisma/prisma.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { EmailService } from '../../providers/email/email.service';
+import {Channel, EventType} from '@prisma/client';
 
 @Injectable()
 export class NotificationsService {
-  create(createNotificationDto: CreateNotificationDto) {
-    return 'This action adds a new notification';
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly emailService: EmailService,
+  ) {}
+
+  async create(createNotificationDto: CreateNotificationDto) {
+    const notification = await this.prisma.notification.create({
+      data: createNotificationDto,
+    });
+
+    if (createNotificationDto.channel === Channel.EMAIL) {
+      const user = await this.prisma.user.findUnique({
+        where: { id: createNotificationDto.userId },
+      });
+      if (user) {
+        await this.emailService.sendEmail(
+          user.email,
+          'New Notification',
+          notification.content,
+        );
+      }
+    }
+
+    return notification;
   }
 
-  findAll() {
-    return `This action returns all notifications`;
+  findAll(
+    userId: string,
+    filters: { eventType?: EventType; channel?: Channel },
+  ) {
+    return this.prisma.notification.findMany({
+      where: {
+        userId,
+        ...(filters.eventType && { event: { type: filters.eventType } }),
+        ...(filters.channel && { channel: filters.channel }),
+      },
+      include: {
+        event: true,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} notification`;
-  }
-
-  update(id: number, updateNotificationDto: UpdateNotificationDto) {
-    return `This action updates a #${id} notification`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} notification`;
+  async markAsRead(id: string) {
+    return this.prisma.notification.update({
+      where: { id },
+      data: { read: true },
+    });
   }
 }

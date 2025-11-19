@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { EmailService } from './providers/email/email.service';
 import { PrismaModule } from './providers/prisma/prisma.module';
 import { EmailModule } from './providers/email/email.module';
@@ -11,6 +12,7 @@ import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     PrismaModule,
     EmailModule,
     UsersModule,

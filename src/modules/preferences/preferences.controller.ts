@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
 } from '@nestjs/common';
 import { PreferencesService } from './preferences.service';
 import { CreatePreferenceDto } from './dto/create-preference.dto';
@@ -20,14 +19,9 @@ export class PreferencesController {
     return this.preferencesService.create(createPreferenceDto);
   }
 
-  @Get()
-  findAll() {
-    return this.preferencesService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.preferencesService.findOne(+id);
+  @Get(':userId')
+  findAll(@Param('userId') userId: string) {
+    return this.preferencesService.findAll(userId);
   }
 
   @Patch(':id')
@@ -35,11 +29,6 @@ export class PreferencesController {
     @Param('id') id: string,
     @Body() updatePreferenceDto: UpdatePreferenceDto,
   ) {
-    return this.preferencesService.update(+id, updatePreferenceDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.preferencesService.remove(+id);
+    return this.preferencesService.update(id, updatePreferenceDto);
   }
 }
