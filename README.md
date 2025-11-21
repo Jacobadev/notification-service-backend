@@ -1,7 +1,3 @@
-# Sistema de Gerenciamento de Notificações
-
-Este é um protótipo funcional de um Sistema de Gerenciamento de Notificações desenvolvido com NestJS, Prisma e TypeScript.
-
 ## Arquitetura e Estrutura do Projeto
 
 O projeto segue uma arquitetura modular, onde cada funcionalidade principal (usuários, notificações, preferências, eventos) está contida em seu próprio módulo.
@@ -15,7 +11,7 @@ O projeto segue uma arquitetura modular, onde cada funcionalidade principal (usu
 - `src/providers`: Contém serviços compartilhados.
   - `prisma`: Serviço para interação com o banco de dados através do Prisma.
   - `email`: Serviço para simulação de envio de e-mails.
-- `prisma`: Contém o schema do banco de dados e as migrações.
+- `prisma`: Contém o schema do banco de dados, migrações e o script de seed.
 
 ## Principais Decisões Técnicas
 
@@ -31,36 +27,46 @@ O projeto segue uma arquitetura modular, onde cada funcionalidade principal (usu
 - Node.js (v16 ou superior)
 - npm
 
-### Instalação
+### Instalação e Execução
 
-1. Clone o repositório:
-   ```bash
-   git clone <url-do-repositorio>
-   cd notification-system
-   ```
+1.  **Clone o repositório:**
+    ```bash
+    git clone <url-do-repositorio>
+    cd notification-system
+    ```
 
-2. Instale as dependências:
-   ```bash
-   npm install
-   ```
+2.  **Instale as dependências:**
+    ```bash
+    npm install
+    ```
 
-3. Crie um arquivo `.env` na raiz do projeto, baseado no `.env.example`, e configure a variável de ambiente:
-   ```
-   DATABASE_URL="file:./dev.db"
-   ```
+3.  **Crie um arquivo `.env`** na raiz do projeto e configure a variável de ambiente do banco de dados. Você pode copiar o conteúdo abaixo:
+    ```env
+    DATABASE_URL="file:./dev.db"
+    ```
 
-4. Aplique as migrações do banco de dados:
-   ```bash
-   npx prisma migrate dev --name init
-   ```
+4.  **Gere o cliente do Prisma:**
+    O Prisma Client é um construtor de consultas gerado automaticamente e com segurança de tipo, adaptado ao seu esquema.
+    ```bash
+    npx prisma generate
+    ```
 
-### Execução
+5.  **Aplique as migrações do banco de dados:**
+    Isso criará o banco de dados SQLite e aplicará as tabelas definidas no `schema.prisma`.
+    ```bash
+    npx prisma migrate dev
+    ```
 
-Para iniciar a aplicação em modo de desenvolvimento, execute:
+6.  **Execute o seed para popular o banco de dados:**
+    Isso executará o script em `prisma/seed.ts` para criar um usuário de desenvolvimento.
+    ```bash
+    npx prisma db seed
+    ```
 
-```bash
-npm run start:dev
-```
+7.  **Inicie a aplicação em modo de desenvolvimento:**
+    ```bash
+    npm run start:dev
+    ```
 
 A API estará disponível em `http://localhost:3000`.
 

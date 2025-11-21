@@ -11,7 +11,7 @@ export class SchedulerService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  @Cron('0 0 * * *') // Every day at midnight
+  @Cron('0 0 * * *')
   async handleDaily() {
     const preferences = await this.prisma.preference.findMany({
       where: { frequency: Frequency.DAILY },
@@ -45,7 +45,7 @@ export class SchedulerService {
     }
   }
 
-  @Cron('0 0 * * 0') // Every Sunday at midnight
+  @Cron('0 0 * * 0')
   async handleWeekly() {
     const preferences = await this.prisma.preference.findMany({
       where: { frequency: Frequency.WEEKLY },
